@@ -1,0 +1,19 @@
+site_name: PAP
+repo_url: http://202.121.178.150:9032/omnilab/pap_demo
+repo_name: Gitlab
+nav:
+    # - 人工预处理: index.md
+    - 数据: 
+      - 数据预处理: about.md
+      - 异常检测: about.md
+    - 特征:
+      - 数据编码: about.md
+      - 特征选择: about.md
+    - 模型: 
+      - 模型训练与预测: train_predict.md
+      - 模型分析: analysis.md
+
+#theme: readthedocs#加了这行久变成了readthedocs风格
+theme:
+    name: mkdocs
+    highlightjs: true
