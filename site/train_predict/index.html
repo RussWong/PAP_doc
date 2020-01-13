@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>模型训练与预测 - PAP</title>
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="..">PAP</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">数据 <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../about/">数据预处理</a>
+</li>
+                                    
+<li >
+    <a href="../about/">异常检测</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">特征 <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../about/">数据编码</a>
+</li>
+                                    
+<li >
+    <a href="../about/">特征选择</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">模型 <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li class="active">
+    <a href="./">模型训练与预测</a>
+</li>
+                                    
+<li >
+    <a href="../analysis/">模型分析</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li >
+                                <a rel="next" href="../about/">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../analysis/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://202.121.178.150:9032/omnilab/pap_demo">Gitlab</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#_1">模型训练与预测</a></li>
+            <li><a href="#_2">模型训练</a></li>
+            <li><a href="#_3">模型预测</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="_1">模型训练与预测</h1>
+<h2 id="_2">模型训练</h2>
+<p>在数据集完成特征工程，异常检测，特征编码，特征选择之后进行模型训练。基于之前的调研，选择了BayesianRidgeRegression，LassoRegression,GradientBoostingRegression,BaggingRegression,XGBoostRegressor五种模型。</p>
+<p>关键代码如下：</p>
+<pre><code>class Model(luigi.Task):
+
+     def requires(self):
+         return FeatureSelection(is_need=self.is_need, type_of_dataset=self.type_of_dataset, name_of_dataset=self.name_of_dataset,
+         name_of_target=self.name_of_target, type_of_encoding=self.type_of_encoding, cols_num=self.cols_num,num_of_feature=self.num_of_feature)
+
+     def output(self):
+         return {'model' : luigi.LocalTarget('Model/{0}/{1}/{1}_{2}.pkl'.format(self.type_of_dataset, self.name_of_dataset, self.name_of_model),
+         format=luigi.format.Nop),
+         'log' : luigi.LocalTarget('Model/{0}/{1}/{1}_{2}_log.txt'.format(self.type_of_dataset, self.name_of_dataset, self.name_of_model)),
+         'train_X': luigi.LocalTarget('Model/{0}/{1}/{1}_{2}_train_X.csv'.format(self.type_of_dataset, self.name_of_dataset, self.name_of_model))}
+
+
+     def run(self):
+         data = pd.read_csv(self.input()['data'].path)
+         model_instance = Model_train(data, self.name_of_target, type_of_dataset=self.type_of_dataset,
+         name_of_dataset=self.name_of_dataset, name_of_model=self.name_of_model)
+         if self.name_of_model == 'bayesianridge':
+             train, test_result, train_X = model_instance.BRreg()
+         elif self.name_of_model == 'lasso':
+             train, test_result, train_X = model_instance.Lreg()
+         elif self.name_of_model =='gradientboosting':
+             train, test_result, train_X = model_instance.GBreg()
+         elif self.name_of_model =='bagging':
+             train, test_result, train_X = model_instance.Breg()
+         elif self.name_of_model =='xgboost':
+             train, test_result, train_X = model_instance.XGBreg()
+         else:
+             pass
+
+         with self.output()['model'].open('wb') as f:
+             joblib.dump(train, f)
+
+         with self.output()['log'].open('w') as f:
+             for key, values in test_result.items():
+                f.write(key + '  ' + str(round(values, 3)) + '\n')
+         with self.output()['train_X'].open('w') as f:
+             train_X.to_csv(f,index=False)
+
+</code></pre>
+
+<p>运行如下指令，完成模型训练</p>
+<pre><code>$  python main.py --local-scheduler Model --name-of-model=&quot;*&quot; --name-of-dataset=&quot;&amp;&quot;
+</code></pre>
+
+<p>其中&amp;处为已经完成编码的数据集名称，*处目前可选择bayesianridge，lasso，gradientboosting，bagging，xgboost。在不指定模型的情况下，默认模型设置为xgboost。</p>
+<p>训练好的模型以及训练的日志数据保存在Model目录下。</p>
+<p>例如，数据集'used_house_data_test'属于House类，将该数据集载入不同的模型生成的所有文件都保存在Model/House/used_house_data_test目录下。</p>
+<p>该目录下，有</p>
+<ul>
+<li>used_house_data_test_bayesianridge.pkl等保存训练好的模型</li>
+<li>used_house_data_test_bayesianridge_log.txt等记录模型指标RMSE,R2,MAE。</li>
+</ul>
+<h2 id="_3">模型预测</h2>
+<p>关键代码如下：</p>
+<pre><code>class Prediction(luigi.Task):
+
+     def requires(self):
+         return Model(is_need=self.is_need, type_of_dataset=self.type_of_dataset, name_of_dataset=self.name_of_dataset,
+         name_of_target=self.name_of_target, type_of_encoding=self.type_of_encoding, name_of_model = self.name_of_model,
+         cols_num = self.cols_num)
+
+     def output(self):
+         pass
+
+     def run(self):
+         predictor = joblib.load(self.input()['model'].path)
+         data = pd.read_csv('Dataset/{0}/{1}/{2}.csv'.format(self.type_of_dataset, self.name_of_dataset, name_of_dataset_prediction))
+         result = predictor.predict(data.drop([self.name_of_target],axis=1))
+         np.savetxt('./Result/result.csv',result,delimiter=',',fmt='%f')
+         pass
+
+</code></pre>
+
+<p>运行指令</p>
+<pre><code>python main.py --local-scheduler Prediction --name-of-dataset-prediction=&quot;￥&quot; --name-of-target=&quot;#&quot;
+</code></pre>
+
+<p>其中，￥处为新生成的csv文件名，#处为预测标签名，例如Final_Price</p>
+<p>预测生成的文件result.csv保存在Result目录。</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
