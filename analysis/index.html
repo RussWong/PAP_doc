@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>模型分析 - PAP</title>
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="..">PAP</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">数据 <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../about/">数据预处理</a>
+</li>
+                                    
+<li >
+    <a href="../about/">异常检测</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">特征 <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../about/">数据编码</a>
+</li>
+                                    
+<li >
+    <a href="../about/">特征选择</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">模型 <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="../train_predict/">模型训练与预测</a>
+</li>
+                                    
+<li class="active">
+    <a href="./">模型分析</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li >
+                                <a rel="next" href="../train_predict/">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="disabled">
+                                <a rel="prev" >
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://202.121.178.150:9032/omnilab/pap_demo">Gitlab</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#_1">模型分析</a></li>
+            <li><a href="#shapley">Shapley</a></li>
+            <li><a href="#_2">全局线性替代模型</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="_1">模型分析</h1>
+<p>模型分析模块的功能：对模型预测结果提供可解释。</p>
+<p>从以下两个角度出发：</p>
+<ul>
+<li>Shapley：将模型对于样本的预测解释为每个特征对预测结果的贡献值之和，每个特征对预测结果的贡献值可表示为：</li>
+</ul>
+<p>$$
+  f\left( { X }<em>{ j } \right) =E\left[ f\left( z \right) |z={ X }</em>{ i },i=1,2,...,j \right]
+  $$</p>
+<ul>
+<li>全局线性替代模型：训练的模型为黑盒模型，难以直接让人理解，使用简单的线性模型来逼近该模型，从而让人理解它的预测结果。</li>
+</ul>
+<h2 id="shapley">Shapley</h2>
+<p>Shapley模块返回各个特征对各个样本的平均Shapley值，以及各个特征对每一个样本的预测结果贡献图。Shapley值的绝对值越高代表该特征对模型预测结果的影响越大。</p>
+<p>关键代码块如下：</p>
+<pre><code>import shap
+import numpy as np
+def shapley(model,X):
+    '''
+    params:
+        model:模型
+        X:训练该模型的训练集
+    return:所有特征对所有样本的平均Shapley值
+    '''
+  explainer = shap.TreeExplainer(model)
+  shap_values = explainer.shap_values(X)
+  shap.force_plot(explainer.expected_value, shap_values[0,:], X.iloc[0,:])
+  shap_mean=np.mean(abs(shap_values),axis=0)
+  return shap_mean
+</code></pre>
+
+<p>结果如下：</p>
+<p><img alt="shap" src="../lasso_shap.png" /></p>
+<h2 id="_2">全局线性替代模型</h2>
+<p>全局线性替代模型返回各个特征的回归系数，回归系数的绝对值越大，代表该特征对模型预测结果的影响越大。</p>
+<p>关键代码块如下：</p>
+<pre><code>from sklearn import Linear_model
+import numpy as np
+import pandas as pd
+def globalsurrogate(testdata,model,X):
+    &quot;&quot;&quot;
+    params:
+        testdata:该模型的测试集
+        model：模型
+        X：该模型的训练集
+    &quot;&quot;&quot;
+    price=model.predict(testdata)
+    coef_list=[]
+    data = getData(userData_pred=price[0], X=X)
+    X_=data.drop(['Final_Price','Label'],axis=1)
+    y=data['Final_Price']
+    g=linear_model.LinearRegression(fit_intercept=False)
+    g.fit(X_, y)
+    coef_list.append(g.coef_)
+    return coef_list
+
+def getData():
+    &quot;&quot;&quot;
+    功能：获取与预测结果一档的对应的子数据集
+    &quot;&quot;&quot;
+</code></pre>
+
+<p>结果如下：</p>
+<p><img alt="globalex" src="../lasso_globalex.png" /></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
