@@ -6,6 +6,7 @@
 
 * Shapley：将模型对于样本的预测解释为每个特征对预测结果的贡献值之和，每个特征对预测结果的贡献值可表示为：
 
+  
   $$
   f\left( { X }_{ j } \right) =E\left[ f\left( z \right) |z={ X }_{ i },i=1,2,...,j \right]
   $$
@@ -40,6 +41,8 @@ def shapley(model,X):
 结果如下：
 
 ![shap](lasso_shap.png)
+
+
 
 
 
@@ -78,5 +81,5 @@ def getData():
 
 结果如下：
 
-![globalex](lasso_globalex.png)
+![lasso_globalex](/Users/huangzhiwei/Desktop/mkdoc_demo/docs/lasso_globalex.png)
 

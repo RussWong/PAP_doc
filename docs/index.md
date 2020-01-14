@@ -4,6 +4,21 @@
 
 
 
+## 项目流程
+
+本项目一共经过了8个流程：
+
+* 人工预处理（王泽华）
+* 数据预处理（王泽华）
+* 数据异常检测（黄宗源）
+* 数据编码（黄宗源）
+* 特征选择（张健全）
+* 模型训练（胡博文、李瑞）
+* 模型预测（胡博文、李瑞）
+* 模型分析（黄志为）
+
+基于Luigi，将所有流程链接起来，建立流程之间的依赖性，形成工作流。
+
 ## 项目目录
 
     Dataset/
@@ -16,18 +31,22 @@
     			
     Result/
     		result.csv						#模型预测结果
-    		
-    analysis.py
+    	
+    main.py									#主函数
     handpreprocessing.py
-    fucset.py
-    main.py
     missing.py
+    fucset.py
     train.py
+    analysis.py
     README.md
 
 
 
 ## 运行方法
+
+* `python -m luigi --module main Hand --local-scheduler` - <font color='red'> 人工预处理</font>，输出原始数据人工预处理后的数据集
+
+
 
 * `python -m luigi --module main Preprocessing --local-scheduler` - <font color='red'> 数据预处理</font>，输出数据预处理后的数据集
 

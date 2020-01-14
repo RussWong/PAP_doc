@@ -4,16 +4,43 @@ repo_name: Gitlab
 nav:
     # - 人工预处理: index.md
     - 数据: 
-      - 数据预处理: about.md
-      - 异常检测: about.md
+      - 数据预处理: data_preprocessing.md
+      - 异常检测: data_anomaly.md
     - 特征:
-      - 数据编码: about.md
-      - 特征选择: about.md
+      - 数据编码: encode.md
+      - 特征选择: encode.md
     - 模型: 
       - 模型训练与预测: train_predict.md
       - 模型分析: analysis.md
 
-#theme: readthedocs
+#theme: readthedocs#加了这行久变成了readthedocs风格
 theme:
     name: mkdocs
     highlightjs: true
+
+# markdown_extensions:
+#     - admonition
+#     - codehilite:
+#         guess_lang: false
+#         linenums: false
+#     - toc:
+#         permalink: true
+#     - footnotes
+#     - meta
+#     - def_list
+#     - pymdownx.arithmatex
+#     - pymdownx.betterem:
+#         smart_enable: all
+#     - pymdownx.caret
+#     - pymdownx.critic
+#     - pymdownx.details
+#     - pymdownx.inlinehilite
+#     - pymdownx.magiclink
+#     - pymdownx.mark
+#     - pymdownx.smartsymbols
+#     - pymdownx.superfences
+#     - pymdownx.tasklist
+#     - pymdownx.tilde
+# extra_javascript:
+#     - './js/extra.js'
+#     - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'

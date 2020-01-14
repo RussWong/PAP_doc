@@ -2,7 +2,7 @@
 
 ## 模型训练
 
-在数据集完成特征工程，异常检测，特征编码，特征选择之后进行模型训练。基于之前的调研，选择了BayesianRidgeRegression，LassoRegression,GradientBoostingRegression,BaggingRegression,XGBoostRegressor五种模型。
+在完成特征工程，异常检测，特征编码，特征选择之后进行模型训练。基于之前的调研，选择了BayesianRidgeRegression，LassoRegression,GradientBoostingRegression,BaggingRegression,XGBoostRegressor五种模型。
 
 关键代码如下：
 ```
