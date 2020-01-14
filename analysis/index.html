@@ -68,7 +68,7 @@
 </li>
                                     
 <li >
-    <a href="../encode/">特征选择</a>
+    <a href="../feature_selection/">特征选择</a>
 </li>
                                 </ul>
                             </li>
@@ -117,6 +117,7 @@
         <li class="main active"><a href="#_1">模型分析</a></li>
             <li><a href="#shapley">Shapley</a></li>
             <li><a href="#_2">全局线性替代模型</a></li>
+            <li><a href="#_3">残差图</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -131,7 +132,12 @@
   f\left( { X }<em>{ j } \right) =E\left[ f\left( z \right) |z={ X }</em>{ i },i=1,2,...,j \right]
   $$</p>
 <ul>
-<li>全局线性替代模型：训练的模型为黑盒模型，难以直接让人理解，使用简单的线性模型来逼近该模型，从而让人理解它的预测结果。</li>
+<li>
+<p>全局线性替代模型：训练的模型为黑盒模型，难以直接让人理解，使用简单的线性模型来逼近该模型，从而让人理解它的预测结果。</p>
+</li>
+<li>
+<p>残差图：表征模型对多个样本的预测值与真实值之差。</p>
+</li>
 </ul>
 <h2 id="shapley">Shapley</h2>
 <p>Shapley模块返回各个特征对各个样本的平均Shapley值，以及各个特征对每一个样本的预测结果贡献图。Shapley值的绝对值越高代表该特征对模型预测结果的影响越大。</p>
@@ -184,7 +190,24 @@ def getData():
 </code></pre>
 
 <p>结果如下：</p>
-<p><img alt="lasso_globalex" src="/Users/huangzhiwei/Desktop/mkdoc_demo/docs/lasso_globalex.png" /></p></div>
+<p><img alt="lasso_globalex" src="/Users/huangzhiwei/Desktop/mkdoc_demo/docs/lasso_globalex.png" /></p>
+<h2 id="_3">残差图</h2>
+<p>关键代码块：</p>
+<pre><code>from yellowbrick.regressor import ResidualsPlot
+def residuals_plot(model, X_test, y_test,road):
+    &quot;&quot;&quot;
+    param 
+    model : 已训练好的模型
+    X_test : 测试集数据
+    y_test : 测试集标签
+    &quot;&quot;&quot;
+    visualizer = ResidualsPlot(model)
+    visualizer.score(X_test, y_test)
+    visualizer.poof(road)
+</code></pre>
+
+<p>输出结果：（以xgboost模型为例）</p>
+<p><img alt="xgb_residual" src="../xgb_residual.png" /></p></div>
         </div>
 
         <footer class="col-md-12">
