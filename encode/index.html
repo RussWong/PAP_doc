@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>模型训练与预测 - PAP</title>
+        <title>特征选择 - PAP</title>
         <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
@@ -59,25 +59,25 @@
 </li>
                                 </ul>
                             </li>
-                            <li class="dropdown">
+                            <li class="dropdown active">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">特征 <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
 <li >
-    <a href="../encode/">数据编码</a>
+    <a href="./">数据编码</a>
 </li>
                                     
-<li >
-    <a href="../encode/">特征选择</a>
+<li class="active">
+    <a href="./">特征选择</a>
 </li>
                                 </ul>
                             </li>
-                            <li class="dropdown active">
+                            <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">模型 <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
-<li class="active">
-    <a href="./">模型训练与预测</a>
+<li >
+    <a href="../train_predict/">模型训练与预测</a>
 </li>
                                     
 <li >
@@ -94,12 +94,12 @@
                             </a>
                         </li>
                             <li >
-                                <a rel="next" href="../encode/">
+                                <a rel="next" href="./">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li >
-                                <a rel="prev" href="../analysis/">
+                                <a rel="prev" href="../train_predict/">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -114,97 +114,62 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#_1">模型训练与预测</a></li>
-            <li><a href="#_2">模型训练</a></li>
-            <li><a href="#_3">模型预测</a></li>
+        <li class="main active"><a href="#_1">特征编码</a></li>
+            <li><a href="#_2">项目实例</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="_1">模型训练与预测</h1>
-<h2 id="_2">模型训练</h2>
-<p>在完成特征工程，异常检测，特征编码，特征选择之后进行模型训练。基于之前的调研，选择了BayesianRidgeRegression，LassoRegression,GradientBoostingRegression,BaggingRegression,XGBoostRegressor五种模型。</p>
-<p>关键代码如下：</p>
-<pre><code>class Model(luigi.Task):
-
-     def requires(self):
-         return FeatureSelection(is_need=self.is_need, type_of_dataset=self.type_of_dataset, name_of_dataset=self.name_of_dataset,
-         name_of_target=self.name_of_target, type_of_encoding=self.type_of_encoding, cols_num=self.cols_num,num_of_feature=self.num_of_feature)
-
-     def output(self):
-         return {'model' : luigi.LocalTarget('Model/{0}/{1}/{1}_{2}.pkl'.format(self.type_of_dataset, self.name_of_dataset, self.name_of_model),
-         format=luigi.format.Nop),
-         'log' : luigi.LocalTarget('Model/{0}/{1}/{1}_{2}_log.txt'.format(self.type_of_dataset, self.name_of_dataset, self.name_of_model)),
-         'train_X': luigi.LocalTarget('Model/{0}/{1}/{1}_{2}_train_X.csv'.format(self.type_of_dataset, self.name_of_dataset, self.name_of_model))}
-
-
-     def run(self):
-         data = pd.read_csv(self.input()['data'].path)
-         model_instance = Model_train(data, self.name_of_target, type_of_dataset=self.type_of_dataset,
-         name_of_dataset=self.name_of_dataset, name_of_model=self.name_of_model)
-         if self.name_of_model == 'bayesianridge':
-             train, test_result, train_X = model_instance.BRreg()
-         elif self.name_of_model == 'lasso':
-             train, test_result, train_X = model_instance.Lreg()
-         elif self.name_of_model =='gradientboosting':
-             train, test_result, train_X = model_instance.GBreg()
-         elif self.name_of_model =='bagging':
-             train, test_result, train_X = model_instance.Breg()
-         elif self.name_of_model =='xgboost':
-             train, test_result, train_X = model_instance.XGBreg()
-         else:
-             pass
-
-         with self.output()['model'].open('wb') as f:
-             joblib.dump(train, f)
-
-         with self.output()['log'].open('w') as f:
-             for key, values in test_result.items():
-                f.write(key + '  ' + str(round(values, 3)) + '\n')
-         with self.output()['train_X'].open('w') as f:
-             train_X.to_csv(f,index=False)
-
-</code></pre>
-
-<p>运行如下指令，完成模型训练</p>
-<pre><code>$  python main.py --local-scheduler Model --name-of-model=&quot;*&quot; --name-of-dataset=&quot;&amp;&quot;
-</code></pre>
-
-<p>其中&amp;处为已经完成编码的数据集名称，*处目前可选择bayesianridge，lasso，gradientboosting，bagging，xgboost。在不指定模型的情况下，默认模型设置为xgboost。</p>
-<p>训练好的模型以及训练的日志数据保存在Model目录下。</p>
-<p>例如，数据集'used_house_data_test'属于House类，将该数据集载入不同的模型生成的所有文件都保存在Model/House/used_house_data_test目录下。</p>
-<p>该目录下，有</p>
+<h1 id="_1">特征编码</h1>
+<p>对数据中分类变量进行特征编码，使字符型数据能被机器学习模型使用。</p>
+<p>编码考虑两种方法：</p>
 <ul>
-<li>used_house_data_test_bayesianridge.pkl等保存训练好的模型</li>
-<li>used_house_data_test_bayesianridge_log.txt等记录模型指标RMSE,R2,MAE。</li>
+<li>Onehot-encoding：独热编码，为每个类别创建一个二进制列。</li>
+<li>Target-encoding：按类别平均目标值进行编码。</li>
 </ul>
-<h2 id="_3">模型预测</h2>
-<p>关键代码如下：</p>
-<pre><code>class Prediction(luigi.Task):
-
-     def requires(self):
-         return Model(is_need=self.is_need, type_of_dataset=self.type_of_dataset, name_of_dataset=self.name_of_dataset,
-         name_of_target=self.name_of_target, type_of_encoding=self.type_of_encoding, name_of_model = self.name_of_model,
-         cols_num = self.cols_num)
-
-     def output(self):
-         pass
-
-     def run(self):
-         predictor = joblib.load(self.input()['model'].path)
-         data = pd.read_csv('Dataset/{0}/{1}/{2}.csv'.format(self.type_of_dataset, self.name_of_dataset, name_of_dataset_prediction))
-         result = predictor.predict(data.drop([self.name_of_target],axis=1))
-         np.savetxt('./Result/result.csv',result,delimiter=',',fmt='%f')
-         pass
-
+<blockquote>
+<p>$$
+u = \frac {n<em>x+m</em>w} {n+m}
+$$</p>
+<ul>
+<li>u为目标编码值</li>
+<li>n为类别中值的个数 </li>
+<li>x为类别中待编码值对应目标值的平均</li>
+<li>m为全局平均的权重</li>
+<li>w为全局平均值</li>
+</ul>
+</blockquote>
+<h2 id="_2">项目实例</h2>
+<p>在项目实例中，两种编码方式均可选择，默认为Target-encoding，减少数据规模并提高可解释性。</p>
+<ul>
+<li>Onehot-encoding
+核心代码如下</li>
+</ul>
+<pre><code class="python">from sklearn.preprocessing import OneHotEncoder
+onehot = OneHotEncoder()
+onehot.fit(data[cols['str']])
+tmp_matrix=onehot.transform(data[cols['str']]).toarray()
+data_category = pd.DataFrame(tmp_matrix,columns=onehot.get_feature_names())
 </code></pre>
 
-<p>运行指令</p>
-<pre><code>python main.py --local-scheduler Prediction --name-of-dataset-prediction=&quot;￥&quot; --name-of-target=&quot;#&quot;
-</code></pre>
+<ul>
+<li>Target-encoding</li>
+</ul>
+<pre><code class="python">def target_encoding(data, group, target, m):
+    # Compute the global mean
+    mean = data[target].mean()
 
-<p>其中，￥处为新生成的csv文件名，#处为预测标签名，例如Final_Price</p>
-<p>预测生成的文件result.csv保存在Result目录。</p></div>
+    # Compute the number of values and the mean of each group
+    agg = data.groupby(group)[target].agg(['count', 'mean'])
+    counts = agg['count']
+    means = agg['mean']
+
+    # Compute the &quot;smoothed&quot; means
+    smooth = (counts * means + m * mean) / (counts + m)
+
+    # Replace each value by the according smoothed mean
+    return data[group].map(smooth)
+</code></pre></div>
         </div>
 
         <footer class="col-md-12">

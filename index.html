@@ -51,11 +51,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li >
-    <a href="about/">数据预处理</a>
+    <a href="data_preprocessing/">数据预处理</a>
 </li>
                                     
 <li >
-    <a href="about/">异常检测</a>
+    <a href="data_anomaly/">异常检测</a>
 </li>
                                 </ul>
                             </li>
@@ -64,11 +64,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li >
-    <a href="about/">数据编码</a>
+    <a href="encode/">数据编码</a>
 </li>
                                     
 <li >
-    <a href="about/">特征选择</a>
+    <a href="encode/">特征选择</a>
 </li>
                                 </ul>
                             </li>
@@ -105,15 +105,29 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#pap">PAP</a></li>
-            <li><a href="#_1">项目目录</a></li>
-            <li><a href="#_2">运行方法</a></li>
+            <li><a href="#_1">项目流程</a></li>
+            <li><a href="#_2">项目目录</a></li>
+            <li><a href="#_3">运行方法</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
 <h1 id="pap">PAP</h1>
 <p>本项目基于链家二手房数据集，经过数据处理、特征工程、模型训练及预测等环节，对二手房成交价完成预测，并且对预测结果进行解释和分析。</p>
-<h2 id="_1">项目目录</h2>
+<h2 id="_1">项目流程</h2>
+<p>本项目一共经过了8个流程：</p>
+<ul>
+<li>人工预处理（王泽华）</li>
+<li>数据预处理（王泽华）</li>
+<li>数据异常检测（黄宗源）</li>
+<li>数据编码（黄宗源）</li>
+<li>特征选择（张健全）</li>
+<li>模型训练（胡博文、李瑞）</li>
+<li>模型预测（胡博文、李瑞）</li>
+<li>模型分析（黄志为）</li>
+</ul>
+<p>基于Luigi，将所有流程链接起来，建立流程之间的依赖性，形成工作流。</p>
+<h2 id="_2">项目目录</h2>
 <pre><code>Dataset/
     House/  
         used_house_data_test/           #数据预处理以及特征工程工作流输出的数据
@@ -125,16 +139,19 @@ Model/
 Result/
         result.csv                      #模型预测结果
 
-analysis.py
+main.py                                 #主函数
 handpreprocessing.py
-fucset.py
-main.py
 missing.py
+fucset.py
 train.py
+analysis.py
 README.md
 </code></pre>
-<h2 id="_2">运行方法</h2>
+<h2 id="_3">运行方法</h2>
 <ul>
+<li>
+<p><code>python -m luigi --module main Hand --local-scheduler</code> - <font color='red'> 人工预处理</font>，输出原始数据人工预处理后的数据集</p>
+</li>
 <li>
 <p><code>python -m luigi --module main Preprocessing --local-scheduler</code> - <font color='red'> 数据预处理</font>，输出数据预处理后的数据集</p>
 </li>
@@ -236,5 +253,5 @@ README.md
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-01-13 14:44:25
+Build Date UTC : 2020-01-14 09:02:22
 -->

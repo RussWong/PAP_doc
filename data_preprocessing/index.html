@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>模型训练与预测 - PAP</title>
+        <title>数据预处理 - PAP</title>
         <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
@@ -46,12 +46,12 @@
                 <div class="navbar-collapse collapse">
                         <!-- Main navigation -->
                         <ul class="nav navbar-nav">
-                            <li class="dropdown">
+                            <li class="dropdown active">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">数据 <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
-<li >
-    <a href="../data_preprocessing/">数据预处理</a>
+<li class="active">
+    <a href="./">数据预处理</a>
 </li>
                                     
 <li >
@@ -72,12 +72,12 @@
 </li>
                                 </ul>
                             </li>
-                            <li class="dropdown active">
+                            <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">模型 <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
-<li class="active">
-    <a href="./">模型训练与预测</a>
+<li >
+    <a href="../train_predict/">模型训练与预测</a>
 </li>
                                     
 <li >
@@ -93,13 +93,13 @@
                                 <i class="fa fa-search"></i> Search
                             </a>
                         </li>
-                            <li >
-                                <a rel="next" href="../encode/">
+                            <li class="disabled">
+                                <a rel="next" >
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li >
-                                <a rel="prev" href="../analysis/">
+                                <a rel="prev" href="../data_anomaly/">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -114,97 +114,79 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#_1">模型训练与预测</a></li>
-            <li><a href="#_2">模型训练</a></li>
-            <li><a href="#_3">模型预测</a></li>
+        <li class="main active"><a href="#_1">人工数据处理</a></li>
+            <li><a href="#_2">项目实例</a></li>
+        <li class="main "><a href="#_3">数据预处理</a></li>
+            <li><a href="#_4">项目实例</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="_1">模型训练与预测</h1>
-<h2 id="_2">模型训练</h2>
-<p>在完成特征工程，异常检测，特征编码，特征选择之后进行模型训练。基于之前的调研，选择了BayesianRidgeRegression，LassoRegression,GradientBoostingRegression,BaggingRegression,XGBoostRegressor五种模型。</p>
-<p>关键代码如下：</p>
-<pre><code>class Model(luigi.Task):
-
-     def requires(self):
-         return FeatureSelection(is_need=self.is_need, type_of_dataset=self.type_of_dataset, name_of_dataset=self.name_of_dataset,
-         name_of_target=self.name_of_target, type_of_encoding=self.type_of_encoding, cols_num=self.cols_num,num_of_feature=self.num_of_feature)
-
-     def output(self):
-         return {'model' : luigi.LocalTarget('Model/{0}/{1}/{1}_{2}.pkl'.format(self.type_of_dataset, self.name_of_dataset, self.name_of_model),
-         format=luigi.format.Nop),
-         'log' : luigi.LocalTarget('Model/{0}/{1}/{1}_{2}_log.txt'.format(self.type_of_dataset, self.name_of_dataset, self.name_of_model)),
-         'train_X': luigi.LocalTarget('Model/{0}/{1}/{1}_{2}_train_X.csv'.format(self.type_of_dataset, self.name_of_dataset, self.name_of_model))}
-
-
-     def run(self):
-         data = pd.read_csv(self.input()['data'].path)
-         model_instance = Model_train(data, self.name_of_target, type_of_dataset=self.type_of_dataset,
-         name_of_dataset=self.name_of_dataset, name_of_model=self.name_of_model)
-         if self.name_of_model == 'bayesianridge':
-             train, test_result, train_X = model_instance.BRreg()
-         elif self.name_of_model == 'lasso':
-             train, test_result, train_X = model_instance.Lreg()
-         elif self.name_of_model =='gradientboosting':
-             train, test_result, train_X = model_instance.GBreg()
-         elif self.name_of_model =='bagging':
-             train, test_result, train_X = model_instance.Breg()
-         elif self.name_of_model =='xgboost':
-             train, test_result, train_X = model_instance.XGBreg()
-         else:
-             pass
-
-         with self.output()['model'].open('wb') as f:
-             joblib.dump(train, f)
-
-         with self.output()['log'].open('w') as f:
-             for key, values in test_result.items():
-                f.write(key + '  ' + str(round(values, 3)) + '\n')
-         with self.output()['train_X'].open('w') as f:
-             train_X.to_csv(f,index=False)
-
-</code></pre>
-
-<p>运行如下指令，完成模型训练</p>
-<pre><code>$  python main.py --local-scheduler Model --name-of-model=&quot;*&quot; --name-of-dataset=&quot;&amp;&quot;
-</code></pre>
-
-<p>其中&amp;处为已经完成编码的数据集名称，*处目前可选择bayesianridge，lasso，gradientboosting，bagging，xgboost。在不指定模型的情况下，默认模型设置为xgboost。</p>
-<p>训练好的模型以及训练的日志数据保存在Model目录下。</p>
-<p>例如，数据集'used_house_data_test'属于House类，将该数据集载入不同的模型生成的所有文件都保存在Model/House/used_house_data_test目录下。</p>
-<p>该目录下，有</p>
+<h1 id="_1">人工数据处理</h1>
+<p>针对数据集的特异性，进行人工的调整。</p>
+<p>主要涉及三个方面:</p>
 <ul>
-<li>used_house_data_test_bayesianridge.pkl等保存训练好的模型</li>
-<li>used_house_data_test_bayesianridge_log.txt等记录模型指标RMSE,R2,MAE。</li>
+<li>特征提取：将特征字段中有意义的部分提取出来</li>
+<li>特征调整：根据先验知识，将特征进行调整。比如特征组合重构、无意义特征删除等</li>
+<li>特定处理：根据特定领域进行的处理操作。如房产数据中地理位置转换为经纬度。</li>
 </ul>
-<h2 id="_3">模型预测</h2>
-<p>关键代码如下：</p>
-<pre><code>class Prediction(luigi.Task):
-
-     def requires(self):
-         return Model(is_need=self.is_need, type_of_dataset=self.type_of_dataset, name_of_dataset=self.name_of_dataset,
-         name_of_target=self.name_of_target, type_of_encoding=self.type_of_encoding, name_of_model = self.name_of_model,
-         cols_num = self.cols_num)
-
-     def output(self):
-         pass
-
-     def run(self):
-         predictor = joblib.load(self.input()['model'].path)
-         data = pd.read_csv('Dataset/{0}/{1}/{2}.csv'.format(self.type_of_dataset, self.name_of_dataset, name_of_dataset_prediction))
-         result = predictor.predict(data.drop([self.name_of_target],axis=1))
-         np.savetxt('./Result/result.csv',result,delimiter=',',fmt='%f')
-         pass
-
+<h2 id="_2">项目实例</h2>
+<p>本房产数据的项目实例中，进行了特征调整与特定处理两方面操作。</p>
+<p><strong>特征调整</strong></p>
+<ul>
+<li>特征组合：将“区域”、“路段”、“小区名”组合成“地理位置”一个特征。</li>
+<li>特征删除：将“交易时间”、“ID”等特征删除。</li>
+</ul>
+<p><strong>特定处理</strong></p>
+<ul>
+<li>经纬度转换：通过百度地图提供的API接口，将地理位置转换成经纬度数据。核心代码如下：</li>
+</ul>
+<pre><code class="python">def Latlng(location):
+    url = 'http://api.map.baidu.com/geocoder?address=' + location +'&amp;output=json'
+    html = requests.get(url,headers={'Connection':'close'})
+    json1 = BeautifulSoup(html.text,'html.parser')
+    text = json.loads(json1.text)
+    lat = text['result']['location']['lat']
+    lng = text['result']['location']['lng']
+    return {'lat':lat,'lng':lng}
 </code></pre>
 
-<p>运行指令</p>
-<pre><code>python main.py --local-scheduler Prediction --name-of-dataset-prediction=&quot;￥&quot; --name-of-target=&quot;#&quot;
+<h1 id="_3">数据预处理</h1>
+<p>对数据进行预处理操作。</p>
+<p>主要涉及四个方面:</p>
+<ul>
+<li>数据概述：</li>
+<li>数据去重：去除重复数据。</li>
+<li>数据标准化：将数值型数据标准化处理。</li>
+<li>缺失处理：</li>
+</ul>
+<h2 id="_4">项目实例</h2>
+<p><strong>数据概述</strong></p>
+<ul>
+<li>功能1</li>
+<li>功能2</li>
+<li>待泽华编写</li>
+</ul>
+<p><strong>数据去重</strong></p>
+<ul>
+<li>去除重复数据。核心代码如下：</li>
+</ul>
+<pre><code class="python">data.drop_duplicates(keep='first', inplace=True)
+data.reset_index(drop=True,inplace=True)
 </code></pre>
 
-<p>其中，￥处为新生成的csv文件名，#处为预测标签名，例如Final_Price</p>
-<p>预测生成的文件result.csv保存在Result目录。</p></div>
+<p><strong>数据标准化</strong></p>
+<ul>
+<li>数值变量标准化。</li>
+</ul>
+<p>RobustScaler是sklearn库中的一个线性变换器，对存在异常的数据具有较好鲁棒性。</p>
+<p>核心代码如下：</p>
+<pre><code class="python">from sklearn.preprocessing import RobustScaler
+data[cols] = pd.DataFrame(RobustScaler().fit_transform(data[cols]),columns=cols)
+</code></pre>
+
+<p><strong>缺失处理</strong></p>
+<p>待泽华编写</p></div>
         </div>
 
         <footer class="col-md-12">
