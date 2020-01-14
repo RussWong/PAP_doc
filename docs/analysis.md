@@ -13,7 +13,7 @@
   
 * 全局线性替代模型：训练的模型为黑盒模型，难以直接让人理解，使用简单的线性模型来逼近该模型，从而让人理解它的预测结果。
   
-  
+* 残差图：表征模型对多个样本的预测值与真实值之差。
 
 ## Shapley
 
@@ -83,3 +83,26 @@ def getData():
 
 ![lasso_globalex](/Users/huangzhiwei/Desktop/mkdoc_demo/docs/lasso_globalex.png)
 
+## 残差图
+
+关键代码块：
+
+```
+from yellowbrick.regressor import ResidualsPlot
+def residuals_plot(model, X_test, y_test,road):
+    """
+    param 
+    model : 已训练好的模型
+    X_test : 测试集数据
+    y_test : 测试集标签
+    """
+    visualizer = ResidualsPlot(model)
+    visualizer.score(X_test, y_test)
+    visualizer.poof(road)
+```
+
+
+
+输出结果：（以xgboost模型为例）
+
+![xgb_residual](xgb_residual.png)

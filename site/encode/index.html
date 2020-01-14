@@ -4,14 +4,14 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="None">
         
         
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>PAP</title>
-        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>特征选择 - PAP</title>
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -19,13 +19,13 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
 
-        <script src="js/jquery-1.10.2.min.js" defer></script>
-        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap-3.0.3.min.js" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script> 
     </head>
 
-    <body class="homepage">
+    <body>
 
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container">
@@ -39,7 +39,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href=".">PAP</a>
+                    <a class="navbar-brand" href="..">PAP</a>
                 </div>
 
                 <!-- Expanded navigation -->
@@ -51,24 +51,24 @@
                                 <ul class="dropdown-menu">
                                     
 <li >
-    <a href="data_preprocessing/">数据预处理</a>
+    <a href="../data_preprocessing/">数据预处理</a>
 </li>
                                     
 <li >
-    <a href="data_anomaly/">异常检测</a>
+    <a href="../data_anomaly/">异常检测</a>
 </li>
                                 </ul>
                             </li>
-                            <li class="dropdown">
+                            <li class="dropdown active">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">特征 <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
 <li >
-    <a href="encode/">数据编码</a>
+    <a href="./">数据编码</a>
 </li>
                                     
-<li >
-    <a href="encode/">特征选择</a>
+<li class="active">
+    <a href="./">特征选择</a>
 </li>
                                 </ul>
                             </li>
@@ -77,11 +77,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li >
-    <a href="train_predict/">模型训练与预测</a>
+    <a href="../train_predict/">模型训练与预测</a>
 </li>
                                     
 <li >
-    <a href="analysis/">模型分析</a>
+    <a href="../analysis/">模型分析</a>
 </li>
                                 </ul>
                             </li>
@@ -93,6 +93,16 @@
                                 <i class="fa fa-search"></i> Search
                             </a>
                         </li>
+                            <li >
+                                <a rel="next" href="./">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="../train_predict/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
                             <li>
                                 <a href="http://202.121.178.150:9032/omnilab/pap_demo">Gitlab</a>
                             </li>
@@ -104,73 +114,62 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#pap">PAP</a></li>
-            <li><a href="#_1">项目流程</a></li>
-            <li><a href="#_2">项目目录</a></li>
-            <li><a href="#_3">运行方法</a></li>
+        <li class="main active"><a href="#_1">特征编码</a></li>
+            <li><a href="#_2">项目实例</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="pap">PAP</h1>
-<p>本项目基于链家二手房数据集，经过数据处理、特征工程、模型训练及预测等环节，对二手房成交价完成预测，并且对预测结果进行解释和分析。</p>
-<h2 id="_1">项目流程</h2>
-<p>本项目一共经过了8个流程：</p>
+<h1 id="_1">特征编码</h1>
+<p>对数据中分类变量进行特征编码，使字符型数据能被机器学习模型使用。</p>
+<p>编码考虑两种方法：</p>
 <ul>
-<li>人工预处理（王泽华）</li>
-<li>数据预处理（王泽华）</li>
-<li>数据异常检测（黄宗源）</li>
-<li>数据编码（黄宗源）</li>
-<li>特征选择（张健全）</li>
-<li>模型训练（胡博文、李瑞）</li>
-<li>模型预测（胡博文、李瑞）</li>
-<li>模型分析（黄志为）</li>
+<li>Onehot-encoding：独热编码，为每个类别创建一个二进制列。</li>
+<li>Target-encoding：按类别平均目标值进行编码。</li>
 </ul>
-<p>基于Luigi，将所有流程链接起来，建立流程之间的依赖性，形成工作流。</p>
-<h2 id="_2">项目目录</h2>
-<pre><code>Dataset/
-    House/  
-        used_house_data_test/           #数据预处理以及特征工程工作流输出的数据
-
-Model/
-    House/
-        used_house_data_test/           #模型评估以及模型分析工作流输出的结果
-
-Result/
-        result.csv                      #模型预测结果
-
-main.py                                 #主函数
-handpreprocessing.py
-missing.py
-fucset.py
-train.py
-analysis.py
-README.md
-</code></pre>
-<h2 id="_3">运行方法</h2>
+<blockquote>
+<p>$$
+u = \frac {n<em>x+m</em>w} {n+m}
+$$</p>
 <ul>
-<li>
-<p><code>python -m luigi --module main Hand --local-scheduler</code> - <font color='red'> 人工预处理</font>，输出原始数据人工预处理后的数据集</p>
-</li>
-<li>
-<p><code>python -m luigi --module main Preprocessing --local-scheduler</code> - <font color='red'> 数据预处理</font>，输出数据预处理后的数据集</p>
-</li>
-<li>
-<p><code>python -m luigi --module main Anomaly --local-scheduler</code> - <font color='red'> 异常检测</font>，输出异常检测后的数据集</p>
-</li>
-<li>
-<p><code>python -m luigi --module main Encoding --local-scheduler</code> - <font color='red'> 特征编码</font>，输出target encoding后的数据集</p>
-</li>
-<li>
-<p><code>python -m luigi --module main FeatureSelection --name-of-feature 15 --local-scheduler</code> - <font color='red'> 特征选择</font>，输出特征选择后还剩15个最重要特征的数据集</p>
-</li>
-<li>
-<p><code>python -m luigi --module main BRreg/XGBreg/Lreg/Breg/GBreg --name-of-model 模型名称 --local-scheduler</code>- <font color='red'>训练模型</font>，模型名称可选<code>bayesianridge</code>,<code>xgboost</code>,<code>lasso</code>,<code>bagging</code>,<code>gradientboosting</code></p>
-</li>
-<li>
-<p><code>python -m luigi --module main Analysis --name-of-model 模型名称 --local-scheduler</code> - <font color='red'>模型分析</font>，输出该模型中特征对预测结果的贡献图，模型名称可选<code>bayesianridge</code>,<code>xgboost</code>,<code>lasso</code>,<code>bagging</code>,<code>gradientboosting</code></p>
-</li>
-</ul></div>
+<li>u为目标编码值</li>
+<li>n为类别中值的个数 </li>
+<li>x为类别中待编码值对应目标值的平均</li>
+<li>m为全局平均的权重</li>
+<li>w为全局平均值</li>
+</ul>
+</blockquote>
+<h2 id="_2">项目实例</h2>
+<p>在项目实例中，两种编码方式均可选择，默认为Target-encoding，减少数据规模并提高可解释性。</p>
+<ul>
+<li>Onehot-encoding
+核心代码如下</li>
+</ul>
+<pre><code class="python">from sklearn.preprocessing import OneHotEncoder
+onehot = OneHotEncoder()
+onehot.fit(data[cols['str']])
+tmp_matrix=onehot.transform(data[cols['str']]).toarray()
+data_category = pd.DataFrame(tmp_matrix,columns=onehot.get_feature_names())
+</code></pre>
+
+<ul>
+<li>Target-encoding</li>
+</ul>
+<pre><code class="python">def target_encoding(data, group, target, m):
+    # Compute the global mean
+    mean = data[target].mean()
+
+    # Compute the number of values and the mean of each group
+    agg = data.groupby(group)[target].agg(['count', 'mean'])
+    counts = agg['count']
+    means = agg['mean']
+
+    # Compute the &quot;smoothed&quot; means
+    smooth = (counts * means + m * mean) / (counts + m)
+
+    # Replace each value by the according smoothed mean
+    return data[group].map(smooth)
+</code></pre></div>
         </div>
 
         <footer class="col-md-12">
@@ -178,11 +177,11 @@ README.md
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
         <script>
-            var base_url = ".",
+            var base_url = "..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="js/base.js" defer></script>
-        <script src="search/main.js" defer></script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
     <div class="modal-dialog">
@@ -250,8 +249,3 @@ README.md
 
     </body>
 </html>
-
-<!--
-MkDocs version : 1.0.4
-Build Date UTC : 2020-01-14 09:05:18
--->

@@ -8,7 +8,7 @@ nav:
       - 异常检测: data_anomaly.md
     - 特征:
       - 数据编码: encode.md
-      - 特征选择: encode.md
+      - 特征选择: feature_selection.md
     - 模型: 
       - 模型训练与预测: train_predict.md
       - 模型分析: analysis.md
