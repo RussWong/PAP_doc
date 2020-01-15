@@ -2,7 +2,7 @@
 
 ## 模型训练
 
-在完成特征工程，异常检测，特征编码，特征选择之后进行模型训练。基于之前的调研，选择了BayesianRidgeRegression，LassoRegression,GradientBoostingRegression,BaggingRegression,XGBoostRegressor五种模型。
+在完成特征工程，异常检测，特征编码，特征选择之后进行模型训练。基于之前的调研，选择了Bayesian, Lasso, GradientBoostingTree, Bagging, XGBoost五种模型。
 
 关键代码如下：
 ```
@@ -87,7 +87,7 @@ class Prediction(luigi.Task):
 
 运行指令
 ```
-python main.py --local-scheduler Prediction --name-of-dataset-prediction="￥" --name-of-target="#"
+$  python main.py --local-scheduler Prediction --name-of-dataset-prediction="￥" --name-of-target="#"
 ```
 其中，￥处为新生成的csv文件名，#处为预测标签名，例如Final_Price
 

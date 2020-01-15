@@ -13,10 +13,10 @@ nav:
       - 模型训练与预测: train_predict.md
       - 模型分析: analysis.md
 
-#theme: readthedocs#加了这行久变成了readthedocs风格
-theme:
-    name: mkdocs
-    highlightjs: true
+theme: readthedocs
+# theme:
+#     name: mkdocs
+#     highlightjs: true
 
 # markdown_extensions:
 #     - admonition

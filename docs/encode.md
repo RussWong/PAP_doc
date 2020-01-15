@@ -7,21 +7,19 @@
 
 
 * Onehot-encoding：独热编码，为每个类别创建一个二进制列。
-* Target-encoding：按类别平均目标值进行编码。
+* Target-encoding：按类别平均目标值进行编码。计算公式如下：
 
 
 
+>![encode](encode.png)
 >
->$$
->u = \frac {n*x+m*w} {n+m}
->$$
-
-
+>
+>
 >- u为目标编码值
 >- n为类别中值的个数 
->- x为类别中待编码值对应目标值的平均
+>- x为类别中待编码值对应的平均目标值
 >- m为全局平均的权重
->- w为全局平均值
+>- w为标签的全局平均值
 
 
 
@@ -32,7 +30,7 @@
 
 
 - Onehot-encoding
-核心代码如下
+核心代码：
 ```python
 from sklearn.preprocessing import OneHotEncoder
 onehot = OneHotEncoder()
@@ -40,7 +38,7 @@ onehot.fit(data[cols['str']])
 tmp_matrix=onehot.transform(data[cols['str']]).toarray()
 data_category = pd.DataFrame(tmp_matrix,columns=onehot.get_feature_names())
 ```
-- Target-encoding
+- Target-encoding 核心代码：
 ```python
 def target_encoding(data, group, target, m):
     # Compute the global mean

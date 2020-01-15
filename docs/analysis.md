@@ -6,10 +6,9 @@
 
 * Shapley：将模型对于样本的预测解释为每个特征对预测结果的贡献值之和，每个特征对预测结果的贡献值可表示为：
 
+  ![gongshi](shap.png)
   
-  $$
-  f\left( { X }_{ j } \right) =E\left[ f\left( z \right) |z={ X }_{ i },i=1,2,...,j \right]
-  $$
+  
   
 * 全局线性替代模型：训练的模型为黑盒模型，难以直接让人理解，使用简单的线性模型来逼近该模型，从而让人理解它的预测结果。
   
@@ -81,7 +80,13 @@ def getData():
 
 结果如下：
 
-![lasso_globalex](/Users/huangzhiwei/Desktop/mkdoc_demo/docs/lasso_globalex.png)
+![lasso_globalex](lasso_globalex.png)
+
+
+
+
+
+
 
 ## 残差图
 

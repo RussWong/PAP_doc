@@ -68,7 +68,7 @@
 </li>
                                     
 <li >
-    <a href="../encode/">特征选择</a>
+    <a href="../feature_selection/">特征选择</a>
 </li>
                                 </ul>
                             </li>
@@ -126,7 +126,6 @@
 <p>孤立森林法（Isolation Forest）是一种被广泛采用的集成异常检测算法。孤立森林由一系列孤立
 树组成，每一颗孤立树是一个二叉树结构。具体实现步骤如下：</p>
 <blockquote>
-<blockquote>
 <ul>
 <li>从数据集中随机选择一定数量样本作为子空间放入孤立树根节点</li>
 <li>随机选择一个维度，并随机产生切割点将数据在此维度下切分为两个子集。</li>
@@ -135,7 +134,6 @@
 <li>对于每个数据点，计算其在每棵树的高度并取平均值，得到异常分数</li>
 <li>设定阈值判断数据异常。</li>
 </ul>
-</blockquote>
 </blockquote>
 <h2 id="_2">项目实例</h2>
 <p>在项目实例中，调用sklearn中的集成模型IsolationForest完成异常检测功能，并使用matplotlib进行画图。</p>
